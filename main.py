@@ -1,18 +1,22 @@
 import time
 import smtplib
+import csv
 import selenium
 import urllib.request
 import json
 
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 DIRECTORY = 'reports'
+myinfo = []
 
 # This might bring up an error so please make sure you have your web driver path correct
 driver = webdriver.Chrome("C:/chromedriver_win32/chromedriver.exe")
@@ -38,10 +42,30 @@ results = driver.find_element_by_xpath('/html/body/div[1]/main/div[2]/div[3]/sec
 print(f'There are {results.text} on the {search_term} item...')
 time.sleep(2)
 
+# PRODUCT LIST
 
+# Get product titles
+Title = driver.find_element_by_xpath("/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a/div[2]/h3")
+Title_text = Title.get_attribute("innerHTML").splitlines()[0]
+print(Title_text)
+
+
+# get price
+raw_Price = driver.find_element_by_xpath("/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a/div[2]/div[2]/div[1]")
+price = (raw_Price.text)
+discounted_price = driver.find_element_by_xpath("/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a/div[2]/div[1]")
+discount = (discounted_price.text)
+print(f"Actual Price : " + price)
+print(f"Selling currently at  : " + discount)
+
+# information containing price and title
+info = (price, discount)
+myinfo.append(info)
+
+# write to excel workbook
 
 # !! ---EMAIL SECTION ---!!
-if price > 1200000 :
+if price > 1200000:
 
     # login credentials
     login = 'jumiaupdate@outlook.com'

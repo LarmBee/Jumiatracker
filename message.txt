@@ -1,5 +1,0 @@
-Hello world
-https://www.jumia.co.ke/catalog/?q=microwave+oven&price=199-12000#catalog-listing
-# select first result
-first_result = driver.find_element_by_xpath('/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a')
-click = first_result.send_keys(Keys.ENTER)
