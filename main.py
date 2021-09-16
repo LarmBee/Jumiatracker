@@ -10,7 +10,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -28,6 +28,7 @@ print("Starting Script...")
 search_term = "Microwave oven"
 # price range
 price = 0 - 12000
+my_price = 120000
 # get search box
 search_box = driver.find_element_by_xpath("/html/body/div[1]/header/section/div/form/div/input")
 search_box.clear()
@@ -65,7 +66,7 @@ myinfo.append(info)
 # write to excel workbook
 
 # !! ---EMAIL SECTION ---!!
-if price > 1200000:
+if my_price > 1200000:
 
     # login credentials
     login = 'jumiaupdate@outlook.com'
@@ -92,5 +93,30 @@ if price > 1200000:
     server.sendmail(sender, receiver, message)
     print("Email has been sent to", receiver)
 
+else:
+    print("Reccomended price still not met . No email sent ")
+    print("Now opening Kilimall Kenya...")
 
+# Kilimall
 
+driver.get("https://www.kilimall.co.ke/")
+
+# navigate to search bar using search term
+
+kili_search = driver.find_element_by_xpath("/html/body/div[1]/div/section/header/div/div[3]/div[2]/div[1]/div/input")
+
+kili_product = kili_search.send_keys(search_term)
+
+print(f"Searching for " + search_term + " on kilimall ...  ")
+
+search_button = driver.find_element_by_xpath("/html/body/div[1]/div/section/header/div/div[3]/div[2]/div[1]/div/div/div/button")
+search_button.click()
+
+# product size
+
+# kili_product_size = driver.find_element_by_xpath("/html/body/div[1]/div/section/main/div/div[2]/section/section/div[1]/div/div/span[2]")
+# print("There are " + kili_product_size.text + "products on Kilimall for " + search_term)
+
+# product
+kili_item = driver.find_element_by_xpath("/html/body/div[1]/div/section/main/div/div[2]/section/section/section/main/div/div/div[1]").append(list_kili)
+print (kili_item)
