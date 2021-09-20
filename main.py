@@ -19,13 +19,19 @@ DIRECTORY = 'reports'
 myinfo = []
 
 # This might bring up an error so please make sure you have your web driver path correct
-driver = webdriver.Chrome("C:/chromedriver_win32/chromedriver.exe")
+# headless options
+options = Options()
+options.add_argument("--headless")
+options.add_argument("--disable-gpu")
+
+driver = webdriver.Chrome("C:/chromedriver_win32/chromedriver.exe", chrome_options=options)
 
 # open our website
 driver.get("https://www.jumia.co.ke/")
+
 print("Starting Script...")
 # product
-search_term = "Microwave oven"
+search_term = "Sound Bars"
 # price range
 price = 0 - 12000
 my_price = 120000
@@ -52,15 +58,24 @@ print(Title_text)
 
 
 # get price
-raw_Price = driver.find_element_by_xpath("/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a/div[2]/div[2]/div[1]")
-price = (raw_Price.text)
-discounted_price = driver.find_element_by_xpath("/html/body/div[1]/main/div[2]/div[3]/section/div[1]/article[1]/a/div[2]/div[1]")
-discount = (discounted_price.text)
-print(f"Actual Price : " + price)
-print(f"Selling currently at  : " + discount)
+actual_Price = driver.find_element_by_class_name("old")
+actual_Price = actual_Price.text
+discounted_price = driver.find_element_by_class_name("prc")
+discounted_price = discounted_price.text
+print(f"Actual Price : " + actual_Price)
+print(f"Selling currently at  : " + discounted_price)
+
+
+# loop trial
+items = []
+loops = driver.find_elements_by_class_name("name")
+for loop in loops:
+    text = loop.text
+    items.append(text)
+    print(text)
 
 # information containing price and title
-info = (price, discount)
+info = (price, discounted_price)
 myinfo.append(info)
 
 # write to excel workbook
@@ -95,28 +110,3 @@ if my_price > 1200000:
 
 else:
     print("Reccomended price still not met . No email sent ")
-    print("Now opening Kilimall Kenya...")
-
-# Kilimall
-
-driver.get("https://www.kilimall.co.ke/")
-
-# navigate to search bar using search term
-
-kili_search = driver.find_element_by_xpath("/html/body/div[1]/div/section/header/div/div[3]/div[2]/div[1]/div/input")
-
-kili_product = kili_search.send_keys(search_term)
-
-print(f"Searching for " + search_term + " on kilimall ...  ")
-
-search_button = driver.find_element_by_xpath("/html/body/div[1]/div/section/header/div/div[3]/div[2]/div[1]/div/div/div/button")
-search_button.click()
-
-# product size
-
-# kili_product_size = driver.find_element_by_xpath("/html/body/div[1]/div/section/main/div/div[2]/section/section/div[1]/div/div/span[2]")
-# print("There are " + kili_product_size.text + "products on Kilimall for " + search_term)
-
-# product
-kili_item = driver.find_element_by_xpath("/html/body/div[1]/div/section/main/div/div[2]/section/section/section/main/div/div/div[1]").append(list_kili)
-print (kili_item)
