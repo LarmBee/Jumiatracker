@@ -68,12 +68,18 @@ print(f"Selling currently at  : " + discounted_price)
 
 # loop trial
 items = []
-loops = driver.find_elements_by_class_name("name")
-for loop in loops:
+products = driver.find_elements_by_class_name("name")
+prices = driver.find_elements_by_class_name("prc")
+for loop in products:
     text = loop.text
     items.append(text)
-    print(text)
+   # print(text)
+for pricing in prices:
+    text2 = pricing.text
+    items.append(text2 )
+   #  print(text2)
 
+    print(items)
 # information containing price and title
 info = (price, discounted_price)
 myinfo.append(info)
