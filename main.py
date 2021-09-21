@@ -4,6 +4,7 @@ import csv
 import selenium
 import urllib.request
 import json
+import pandas as pd
 
 
 from selenium import webdriver
@@ -68,23 +69,30 @@ print(f"Selling currently at  : " + discounted_price)
 
 # loop trial
 items = []
+prces = []
 products = driver.find_elements_by_class_name("name")
 prices = driver.find_elements_by_class_name("prc")
 for loop in products:
     text = loop.text
     items.append(text)
-   # print(text)
+    # print(text)
 for pricing in prices:
     text2 = pricing.text
-    items.append(text2 )
-   #  print(text2)
-
-    print(items)
+    prces.append(text2 )
+    # print(text2)
+# print format
+# print('%s ,%s' % (items , prces))
+q = [' '.join(x) for x in zip(items,prces)]
+print(q)
 # information containing price and title
 info = (price, discounted_price)
 myinfo.append(info)
 
 # write to excel workbook
+df = pd.DataFrame(new_list)
+writer = pd.ExcelWriter('test.xlsx', engine='xlsxwriter')
+df.to_excel(writer, sheet_name='products', index=False)
+writer.save()
 
 # !! ---EMAIL SECTION ---!!
 if my_price > 1200000:
@@ -115,4 +123,4 @@ if my_price > 1200000:
     print("Email has been sent to", receiver)
 
 else:
-    print("Reccomended price still not met . No email sent ")
+    print("Recommended price still not met . No email sent ")
