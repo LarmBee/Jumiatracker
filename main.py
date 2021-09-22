@@ -5,6 +5,7 @@ import selenium
 import urllib.request
 import json
 import pandas as pd
+import xlsxwriter
 
 
 from selenium import webdriver
@@ -16,8 +17,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-DIRECTORY = 'reports'
+# my lists
 myinfo = []
+items = []
+prces = []
+
 
 # This might bring up an error so please make sure you have your web driver path correct
 # headless options
@@ -32,7 +36,7 @@ driver.get("https://www.jumia.co.ke/")
 
 print("Starting Script...")
 # product
-search_term = "Sound Bars"
+search_term = "Tecno"
 # price range
 price = 0 - 12000
 my_price = 120000
@@ -68,8 +72,7 @@ print(f"Selling currently at  : " + discounted_price)
 
 
 # loop trial
-items = []
-prces = []
+
 products = driver.find_elements_by_class_name("name")
 prices = driver.find_elements_by_class_name("prc")
 for loop in products:
@@ -83,16 +86,20 @@ for pricing in prices:
 # print format
 # print('%s ,%s' % (items , prces))
 q = [' '.join(x) for x in zip(items,prces)]
-print(q)
+
+# print out all products and prices side by side
+# print(q)
 # information containing price and title
 info = (price, discounted_price)
 myinfo.append(info)
 
 # write to excel workbook
-df = pd.DataFrame(new_list)
+df = pd.DataFrame(q)
 writer = pd.ExcelWriter('test.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='products', index=False)
 writer.save()
+
+print("Product lists have been saved to excel")
 
 # !! ---EMAIL SECTION ---!!
 if my_price > 1200000:
