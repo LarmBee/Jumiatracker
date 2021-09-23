@@ -37,7 +37,7 @@ driver.get("https://www.jumia.co.ke/")
 
 print("Starting Script...")
 # product
-search_term = "Tecno"
+search_term = "Washing Machine"
 # price range
 price = 0 - 12000
 my_price = 120000
@@ -79,7 +79,7 @@ prices = driver.find_elements_by_class_name("prc")
 link = driver.find_elements_by_class_name("core")
 for elem in link:
     links= (elem.get_attribute("href"))
-    print(links)
+    lnks.append(links)
 for loop in products:
     text = loop.text
     items.append(text)
@@ -89,8 +89,8 @@ for pricing in prices:
     prces.append(text2 )
     # print(text2)
 # print format
-# print('%s ,%s' % (items , prces))
-q = [' '.join(x) for x in zip(items,prces,links)]
+print('%s ,%s, %s' % (items , prces, lnks))
+q = [' '.join(x) for x in zip(items,prces,lnks)]
 
 # print out all products and prices side by side
 # print(q)
