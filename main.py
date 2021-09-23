@@ -21,6 +21,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 myinfo = []
 items = []
 prces = []
+lnks = []
 
 
 # This might bring up an error so please make sure you have your web driver path correct
@@ -75,6 +76,10 @@ print(f"Selling currently at  : " + discounted_price)
 
 products = driver.find_elements_by_class_name("name")
 prices = driver.find_elements_by_class_name("prc")
+link = driver.find_elements_by_class_name("core")
+for elem in link:
+    links= (elem.get_attribute("href"))
+    print(links)
 for loop in products:
     text = loop.text
     items.append(text)
@@ -85,7 +90,7 @@ for pricing in prices:
     # print(text2)
 # print format
 # print('%s ,%s' % (items , prces))
-q = [' '.join(x) for x in zip(items,prces)]
+q = [' '.join(x) for x in zip(items,prces,links)]
 
 # print out all products and prices side by side
 # print(q)
