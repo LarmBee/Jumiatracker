@@ -3,20 +3,15 @@ import time
 import smtplib
 import csv
 import selenium
-import urllib.request
-import json
 import pandas as pd
-import xlsxwriter
-
-
+from tkinter import *
+import chromedriver_autoinstaller
+import tkinter as tk
+from PIL import Image, ImageTk
+from tkinter.filedialog import asksaveasfile
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
-# from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 
 # my lists
 
@@ -25,23 +20,22 @@ items = []
 prces = []
 lnks = []
 
-
 # This might bring up an error so please make sure you have your web driver path correct
 # headless options
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
 
+chromedriver_autoinstaller.install()
+driver = webdriver.Chrome(chrome_options=options)
+
 
 def run():
-
-    driver = webdriver.Chrome("C:/chromedriver_win32/chromedriver.exe", chrome_options=options)
-
     # open our website
     driver.get("https://www.jumia.co.ke/")
     print("Starting Script...")
     # product
-    search_term = "Infinix"
+    search_term = 'oppo'
 
     # price range
     price = 0 - 12000
@@ -53,7 +47,6 @@ def run():
     search_box.send_keys(Keys.ENTER)
     print(f"Looking for {search_term} ...")
     time.sleep(1)
-
 
     # no of products
     results = driver.find_element_by_xpath('/html/body/div[1]/main/div[2]/div[3]/section/header/div[2]/p')
@@ -68,15 +61,13 @@ def run():
     # print titles
     # print(Title_text)
 
-
     # get price
-    actual_Price = driver.find_element_by_class_name("old")
-    actual_Price = actual_Price.text
+    actual_price = driver.find_element_by_class_name("old")
+    actual_price = actual_price.text
     discounted_price = driver.find_element_by_class_name("prc")
     discounted_price = discounted_price.text
-    # print(f"Actual Price : " + actual_Price)
+    # print(f"Actual Price : " + actual_price)
     # print(f"Selling currently at  : " + discounted_price)
-
 
     # loop trial
 
@@ -84,7 +75,7 @@ def run():
     prices = driver.find_elements_by_class_name("prc")
     link = driver.find_elements_by_class_name("core")
     for elem in link:
-        links= (elem.get_attribute("href"))
+        links = (elem.get_attribute("href"))
         lnks.append(links)
     for loop in products:
         text = loop.text
@@ -92,11 +83,11 @@ def run():
         # print(text)
     for pricing in prices:
         text2 = pricing.text
-        prces.append(text2 )
+        prces.append(text2)
         # print(text2)
     # print format
     # print('%s ,%s, %s' % (items , prces, lnks))
-    q = [' '.join(x) for x in zip(items,prces,lnks)]
+    q = [' '.join(x) for x in zip(items, prces, lnks)]
 
     # print out all products and prices side by side
     # print(q)
@@ -123,7 +114,7 @@ def run():
         receiver = 'brandonkanute@gmail.com'
 
         # #
-        message =  f"""\
+        message = f"""\
         Subject : Your monitored product {search_term}
         To : {receiver}
         From :{sender}
