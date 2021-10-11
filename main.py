@@ -1,19 +1,19 @@
-import os
 import time
 import smtplib
 import csv
 import selenium
 import pandas as pd
-from tkinter import *
 import chromedriver_autoinstaller
-import tkinter as tk
-from PIL import Image, ImageTk
-from tkinter.filedialog import asksaveasfile
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
-
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from sys import exit
 # my lists
+
 
 myinfo = []
 items = []
@@ -26,8 +26,7 @@ options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
 
-chromedriver_autoinstaller.install()
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome(executable_path=r'C:\chromedriver_win32\chromedriver.exe', chrome_options=options)
 
 
 def run():
@@ -35,11 +34,9 @@ def run():
     driver.get("https://www.jumia.co.ke/")
     print("Starting Script...")
     # product
-    search_term = 'oppo'
+    search_term = input("What product are you searching for : ")
 
-    # price range
-    price = 0 - 12000
-    my_price = 120000
+    # https://www.jumia.co.ke/oppo/?price=400-20000
     # get search box
     search_box = driver.find_element_by_xpath("/html/body/div[1]/header/section/div/form/div/input")
     search_box.clear()
@@ -48,8 +45,14 @@ def run():
     print(f"Looking for {search_term} ...")
     time.sleep(1)
 
+    # price range
+    my_prices = input("What is the max price for what you require : ")
+    driver.get(driver.current_url + '&price=-' + my_prices)
     # no of products
-    results = driver.find_element_by_xpath('/html/body/div[1]/main/div[2]/div[3]/section/header/div[2]/p')
+    # use web driver wait to wait for elements to load in site
+    time.sleep(3)
+    results = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/main/div[2]/div[3]/section/header/div[2]/p')))
     print(f'There are {results.text} on the {search_term} item...')
     time.sleep(2)
 
@@ -70,7 +73,6 @@ def run():
     # print(f"Selling currently at  : " + discounted_price)
 
     # loop trial
-
     products = driver.find_elements_by_class_name("name")
     prices = driver.find_elements_by_class_name("prc")
     link = driver.find_elements_by_class_name("core")
@@ -92,7 +94,7 @@ def run():
     # print out all products and prices side by side
     # print(q)
     # information containing price and title
-    info = (price, discounted_price)
+    info = ( discounted_price)
     myinfo.append(info)
 
     # write to excel workbook
@@ -101,10 +103,10 @@ def run():
     df.to_excel(writer, sheet_name='products', index=False)
     writer.save()
 
-    print("Product lists have been saved to excel")
-
+    print("Product lists have been saved to excel file please open and save the data")
+    email = 12
     # !! ---EMAIL SECTION ---!!
-    if my_price > 1200000:
+    if email > 1200000:
 
         # login credentials
         login = 'jumiaupdate@outlook.com'
@@ -133,6 +135,16 @@ def run():
 
     else:
         print("Recommended price still not met . No email sent ")
+
+    # Load Excel file
+
+    prompt = input("would you like to run the program ? (yes or no) :")
+    while prompt == "yes":
+        print('Please open test.xlsx file and save current item as python does not auto save before rerunning')
+        print('The current results will be overwritten every time you run')
+        run()
+    else:
+        exit()
 
 
 if __name__ == "__main__":
