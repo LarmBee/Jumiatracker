@@ -3,17 +3,19 @@ import smtplib
 import csv
 import selenium
 import pandas as pd
-import chromedriver_autoinstaller
+
 
 from selenium import webdriver
+from selenium.webdriver.chrome import service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from sys import exit
 # my lists
-
 
 myinfo = []
 items = []
@@ -26,8 +28,8 @@ options = Options()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
 
-driver = webdriver.Chrome(executable_path=r'C:\chromedriver_win32\chromedriver.exe', chrome_options=options)
-
+# driver = webdriver.Chrome(executable_path=r'C:\chromedriver_win32\chromedriver.exe', chrome_options=options)
+driver = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=options)
 
 def run():
     # open our website
